@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+### BEGIN content of wishbone-wordpress-entrypoint
+
+# generate the Wordpress config only if it already exists and the proper variables are set
+
+if [ ! -f /var/www/html/wp-config.php ] \
+  && [ -n "$MYSQL_DATABASE" ] \
+  && [ -n "$MYSQL_USER" ] \
+  && [ -n "$MYSQL_PASSWORD" ] \
+  && [ -n "$MYSQL_HOST" ]
+then
+  echo "Creating /var/www/html/wp-config.php"
+  /bin/sed -e "s/database_name_here/$MYSQL_DATABASE/" \
+           -e "s/username_here/$MYSQL_USER/" \
+           -e "s/password_here/$MYSQL_PASSWORD/" \
+           -e "s/localhost/$MYSQL_HOST/" wp-config-sample.php \
+           > /var/www/html/wp-config.php
+fi
+
+### END content of wishbone-wordpress-entrypoint
+
+
+# first arg is `-f` or `--some-option`
+if [ "${1#-}" != "$1" ]; then
+	set -- php "$@"
+fi
+
+exec "$@"
