@@ -1,0 +1,5 @@
+
+if [ ! -f /var/www/html/wp-config.php ]; then
+    echo "/var/www/html/wp-config.php not found. Creating"
+    /bin/sed -e "s/database_name_here/$MYSQL_DATABASE/" -e "s/username_here/$MYSQL_USER/" -e "s/password_here/$MYSQL_PASSWORD/" -e "s/localhost/$MYSQL_HOST/" wp-config-sample.php > wp-config.php
+fi
